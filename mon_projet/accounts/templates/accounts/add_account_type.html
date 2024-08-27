@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Account Type</title>
+    <link rel="stylesheet" href="{% static 'css/add_account.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Add Account Type</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_name">Name:</label>
+                <input type="text" id="id_name" name="name" required>
+                {{ form.name.errors }}
+            </div>
+            <div class="form-group">
+                <label for="id_description">Description:</label>
+                <textarea id="id_description" name="description" rows="4"></textarea>
+                {{ form.description.errors }}
+            </div>
+            <button type="submit" class="btn">Add</button>
+        </form>
+    </div>
+</body>
+</html>

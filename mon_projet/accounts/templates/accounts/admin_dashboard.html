@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+        
+        <!-- Action Buttons -->
+        <div class="actions">
+            <a href="{% url 'add_account_type' %}" class="btn btn-add">Add Account Type</a>
+            <a href="{% url 'add_profile' %}" class="btn btn-add">Add Profile</a>
+            <a href="{% url 'add_manager' %}" class="btn btn-add">Add Manager</a>
+            <a href="{% url 'add_department' %}" class="btn btn-add">Add departement</a>
+        </div>
+        
+        <!-- Manager Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for manager in managers %}
+                <tr>
+                    <td>{{ manager.user.first_name }} {{ manager.user.last_name }}</td>
+                    <td>{{ manager.user.email }}</td>
+                    <td>
+                        <!-- Edit Button -->
+                        <a href="{% url 'edit_manager' manager.id %}" class="btn btn-edit">Edit</a>
+                        
+                        <!-- Delete Button -->
+                        <form action="{% url 'delete_manager' manager.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

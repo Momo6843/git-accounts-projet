@@ -1,0 +1,152 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button.btn {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.btn:hover {
+    background-color: #0056b3;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+table th {
+    background-color: #f2f2f2;
+}
+/* styles.css */
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Style pour le bouton d'édition */
+.btn-edit {
+    background-color: #4CAF50; /* Vert */
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #45a049;
+}
+
+/* Style pour le bouton de suppression */
+.btn-danger {
+    background-color: #f44336; /* Rouge */
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #e53935;
+}
+
+/* Style pour le bouton d'ajout */
+.btn-add {
+    background-color: #ba004d; /* Bleu */
+    color: white;
+}
+.btn-pdf{
+    background-color: blue; /* Bleu */
+    color: white;
+}
+
+
+.btn-add:hover {
+    background-color: #007bb5;
+}
+
+/* Style pour le bouton de déconnexion */
+.btn-logout {
+    background-color: #555555; /* Gris */
+    color: white;
+}
+
+.btn-logout:hover {
+    background-color: #333333;
+}
+
+/* Messages */
+.messages {
+    list-style-type: none;
+    padding: 0;
+}
+
+.messages li {
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.success {
+    background-color: #dff0d8; /* Vert pâle */
+    color: #3c763d; /* Vert foncé */
+}
+
+.error {
+    background-color: #f2dede; /* Rouge pâle */
+    color: #a94442; /* Rouge foncé */
+}
+

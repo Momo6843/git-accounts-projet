@@ -1,0 +1,80 @@
+/* Reset some default styles */
+body, h2, form {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Full viewport height */
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #f8f9fa, #e9ecef); /* Light gradient background */
+}
+
+/* Container for centering the form */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+}
+
+/* Form styling */
+form {
+    background: rgba(255, 255, 255, 0.8); /* Slightly more transparent white background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    max-width: 280px; /* Reduced size */
+    width: 100%;
+    backdrop-filter: blur(10px); /* Apply blur to the background */
+}
+
+/* Title styling */
+h2 {
+    font-size: 20px; /* Reduced size */
+    margin-bottom: 15px;
+    text-align: center;
+    color: #343a40;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 12px;
+}
+
+/* Label styling */
+label {
+    display: block;
+    margin-bottom: 4px;
+    color: #495057;
+    font-size: 14px; /* Smaller font size */
+}
+
+/* Input field styling */
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 6px; /* Reduced padding */
+    border: 2px solid #ced4da; /* Thicker border */
+    border-radius: 4px;
+    font-size: 12px; /* Smaller font size */
+    box-sizing: border-box;
+}
+
+/* Button styling */
+button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    padding: 6px 10px; /* Reduced padding */
+    border-radius: 4px;
+    font-size: 12px; /* Smaller font size */
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

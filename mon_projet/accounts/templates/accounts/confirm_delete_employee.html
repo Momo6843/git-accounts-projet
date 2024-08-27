@@ -1,0 +1,22 @@
+<!-- confirm_delete_employee.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Delete</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Confirm Delete</h2>
+        <p>Are you sure you want to delete {{ employee.first_name }} {{ employee.last_name }}?</p>
+        <form method="post" action="{% url 'delete_employee' employee.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirm</button>
+            <a href="{% url 'manager_dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

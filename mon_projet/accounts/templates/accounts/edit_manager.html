@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Manager</title>
+    <link rel="stylesheet" href="{% static 'css/edit_manager.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Manager</h2>
+        <form method="post" action="{% url 'edit_manager' manager.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee PDF</title>
+    
+</head>
+<body>
+    <div class="container">
+        <h2>Employee Details</h2>
+        {% for employee in employees %}
+            <div class="employee-details">
+                <p><strong>Name:</strong> {{ employee.first_name }} {{ employee.last_name }}</p>
+                <p><strong>Email:</strong> {{ employee.email }}</p>
+                <p><strong>Department:</strong> {{ employee.department }}</p>
+                <p><strong>Account Types:</strong>
+                    {% for account_type in employee.account_types.all %}
+                        {{ account_type.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

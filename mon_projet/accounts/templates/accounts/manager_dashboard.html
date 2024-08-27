@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Manager Dashboard</h1>
+
+        <!-- Display success or error messages -->
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Search form -->
+        <form method="get" action="{% url 'manager_dashboard' %}">
+            <input type="text" name="q" placeholder="Search employees..." value="{{ request.GET.q }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Employees table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Email</th>
+                    <th>Account Types</th>
+                    <th>Department</th>
+                    <th>Hire Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+                    <td>{{ employee.email }}</td>
+                    <td>
+                        {% for account_type in employee.account_types.all %}
+                            {{ account_type.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ employee.department.name }}</td>
+                    <td>{{ employee.hire_date }}</td>
+                    <td>
+                        <div class="btn-container">
+                            <div class="btn-group btn-group-top">
+                                <a href="{% url 'edit_employee' employee.id %}" class="btn btn-edit">Editer</a>
+                                <form action="{% url 'delete_employee' employee.id %}" method="post" class="btn-group">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                </form>
+                            </div>
+                            <a href="{% url 'generate_employee_pdf' employee.id %}" class="btn btn-pdf btn-bottom">Télécharger</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Buttons Group -->
+        <div class="btn-group">
+            <a href="{% url 'add_employee' %}" class="btn btn-add">Add Employee</a>
+            <a href="{% url 'generate_pdf' %}" class="btn btn-pdf">Download PDF</a>
+            <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+        </div>
+    </div>
+</body>
+</html>
