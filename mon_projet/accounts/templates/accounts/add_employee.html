@@ -3,12 +3,24 @@
 <head>
     {% load static %}
     <meta charset="UTF-8">
-    <title>Add Employee</title>
+    <title>
+        {% if action == 'edit' %}
+            Edit Employee
+        {% else %}
+            Add Employee
+        {% endif %}
+    </title>
     <link rel="stylesheet" href="{% static 'css/add_employee.css' %}">
 </head>
 <body>
     <div class="form-container">
-        <h1>Add Employee</h1>
+        <h1>
+            {% if action == 'edit' %}
+                Edit Employee
+            {% else %}
+                Add Employee
+            {% endif %}
+        </h1>
         <form method="post">
             {% csrf_token %}
             <div class="form-row">
@@ -56,7 +68,13 @@
                     </div>
                 {% endif %}
             {% endfor %}
-            <button type="submit">Add Employee</button>
+            <button type="submit">
+                {% if action == 'edit' %}
+                     Update Employee
+                {% else %}
+                     Add Employee
+                {% endif %}
+        </button>
         </form>
     </div>
     <script src="{% static 'js/profile_selection.js' %}"></script>

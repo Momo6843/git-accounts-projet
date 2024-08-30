@@ -87,10 +87,17 @@ input[type="checkbox"] {
     margin-bottom: 0.5rem;
 }
 
-.error {
-    color: red;
-    margin-bottom: 1rem;
+.error{
+    color: red; /* Met le texte en rouge */
+    font-weight: bold; /* Rend le texte gras */
+    margin: 10px 0; /* Ajoute un espace autour du message d'erreur */
+    padding: 5px; /* Ajoute un peu de remplissage pour améliorer l'apparence */
+    border: 1px solid red; /* Ajoute une bordure rouge autour du message */
+    border-radius: 4px; /* Ajoute des coins arrondis à la bordure */
+    background-color: #f8d7da; /* Optionnel : couleur de fond pour le message d'erreur */
 }
+
+
 
 button {
     background-color: #007BFF;

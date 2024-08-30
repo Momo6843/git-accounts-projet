@@ -1,72 +1,51 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import AccountTypeForm, ManagerForm, EmployeeForm, ProfileForm,DepartmentForm
-from .models import AccountType, Manager, Employee, Profile,EmployeeAccountType
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.views.decorators.csrf import csrf_protect
-import os
 from django.conf import settings
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Employee
+
+from .forms import AccountTypeForm, ManagerForm, EmployeeForm, ProfileForm, DepartmentForm
+from .models import AccountType, Manager, Employee, Profile, EmployeeAccountType
+
+from xhtml2pdf import pisa
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
-import pandas as pd
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+
+import os
 import io
+import pandas as pd
 
-
-
-
-# views.py
-
-from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
 from django.db.models import Q
-from .models import Employee, Manager
-from django.http import HttpResponse
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib import colors
-import io
-from .models import Employee
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from .models import Employee
-import io
-import pandas as pd
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.platypus import SimpleDocTemplate, Paragraph
-from reportlab.platypus import Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from .models import Employee
-import io
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from .models import Employee
-import io
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
-from reportlab.lib.units import inch
+@csrf_protect
+@login_required
+def edit_employee(request, pk):
+    try:
+        employee = get_object_or_404(Employee, pk=pk)
+    except Http404:
+        messages.error(request, "This employee does not exist.")
+        return redirect('manager_dashboard')  # Redirigez vers une vue appropriée
 
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Employee updated successfully.')
+            return redirect('manager_dashboard')
+    else:
+        form = EmployeeForm(instance=employee)
+        
+    managers = Manager.objects.all()  # Incluez les managers dans le contexte
+    return render(request, 'accounts/add_employee.html', {'form': form, 'managers': managers,'action': 'edit'})
+
+@csrf_protect
+@login_required
 def generate_employee_pdf_indiv(request, employee_id):
     employee = get_object_or_404(Employee, id=employee_id)
 
@@ -113,8 +92,8 @@ def generate_employee_pdf_indiv(request, employee_id):
     return response
 
 
-
-
+@csrf_protect
+@login_required
 def manager_dashboard(request):
     query = request.GET.get('q')
     if query:
@@ -127,10 +106,19 @@ def manager_dashboard(request):
         ).distinct()
     else:
         employees = Employee.objects.all()
-    
-    managers = Manager.objects.all()  # Include managers in the context
-    return render(request, 'accounts/manager_dashboard.html', {'employees': employees, 'managers': managers})
 
+    # Définir le message à passer au template
+    no_results_message = "Aucun utilisateur trouvé" if not employees.exists() else ""
+    
+    managers = Manager.objects.all()  # Inclure les managers dans le contexte
+
+    return render(request, 'accounts/manager_dashboard.html', {
+        'employees': employees,
+        'managers': managers,
+        'no_results_message': no_results_message  # Passer le message au template
+    })
+@csrf_protect
+@login_required
 def generate_pdf(request):
     # Récupérer les données de la base de données
     employees = Employee.objects.prefetch_related('account_types', 'department')
@@ -180,6 +168,8 @@ def generate_pdf(request):
     # Récupérer le PDF en mémoire et le retourner dans la réponse HTTP
     buffer.seek(0)
     return HttpResponse(buffer, content_type='application/pdf')
+
+@csrf_protect
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -194,23 +184,31 @@ def login_view(request):
             else:
                 return redirect('manager_dashboard')  # Redirecting to manager_dashboard as default
         else:
-            return render(request, 'accounts/login.html', {'error': 'Invalid credentials'})
+            return render(request, 'accounts/login.html', {'error': 'Username or password incorect'})
     return render(request, 'accounts/login.html')
 # views.py
 
-from django.http import JsonResponse
-from .models import Profile
+@csrf_protect
+@login_required
 def get_account_types(request, profile_id):
     profile = Profile.objects.get(id=profile_id)
     account_types = profile.account_types.values_list('id', flat=True)
     return JsonResponse({'account_types': list(account_types)})
 
+@csrf_protect
+@login_required
 def is_admin(user):
     return user.is_superuser
 
-
+@csrf_protect
+@login_required
 def edit_manager(request, manager_id):
-    manager = get_object_or_404(Manager, id=manager_id)
+    try:
+        manager = get_object_or_404(Manager, id=manager_id)
+    except Http404:
+        messages.error(request, "This manager does not exist.")
+        return redirect('admin_dashboard')  # Redirigez vers une vue appropriée
+
     if request.method == 'POST':
         form = ManagerForm(request.POST, instance=manager.user)
         if form.is_valid():
@@ -219,58 +217,46 @@ def edit_manager(request, manager_id):
             return redirect('admin_dashboard')
     else:
         form = ManagerForm(instance=manager.user)
-    managers = Manager.objects.all()  # Include managers in the context
-    return render(request, 'accounts/edit_manager.html', {'form': form, 'manager': manager, 'managers': managers})
+        
+    return render(request, 'accounts/edit_manager.html', {'form': form, 'manager': manager})
 
+
+@csrf_protect
+@login_required
 def delete_manager(request, manager_id):
     manager = get_object_or_404(Manager, id=manager_id)
     
+    # Supprimer le manager directement sans confirmation
+    manager.user.delete()
+    messages.success(request, 'Manager deleted successfully.')
     
-    if request.method == 'POST':
-        manager.user.delete()
-        messages.success(request, 'Manager deleted successfully.')
-        return redirect('admin_dashboard')
-    print("sdddddjjijjnj")
-    managers = Manager.objects.all()  # Include managers in the context
-    return render(request, 'accounts/confirm_delete_manager.html', { 'managers': managers})
+    return redirect('admin_dashboard')
 
-
-def edit_employee(request, pk):
-    employee = get_object_or_404(Employee, pk=pk)
-    if request.method == 'POST':
-        form = EmployeeForm(request.POST, instance=employee)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Employee updated successfully.')
-            return redirect('manager_dashboard')
-    else:
-        form = EmployeeForm(instance=employee)
-    managers = Manager.objects.all()  # Include managers in the context
-    return render(request, 'accounts/add_employee.html', {'form': form, 'managers': managers})
-
-
+@csrf_protect
+@login_required
 def delete_employee(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
-    if request.method == 'POST':
-        employee.delete()
-        messages.success(request, 'Employee deleted successfully.')
-        return redirect('manager_dashboard')
-    return render(request, 'accounts/confirm_delete_employee.html', {'employee': employee})
+    
+    # Supprimer l'employé directement sans confirmation
+    employee.delete()
+    messages.success(request, 'Employee deleted successfully.')
+    
+    return redirect('manager_dashboard')
 
-
+@csrf_protect
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('login')
 
-
-
-
-
+@csrf_protect
+@login_required
 def admin_dashboard(request):
     managers = Manager.objects.all()
     return render(request, 'accounts/admin_dashboard.html', {'managers': managers})
 
-
+@csrf_protect
+@login_required
 def add_account_type(request):
     if request.method == 'POST':
         form = AccountTypeForm(request.POST)
@@ -282,7 +268,8 @@ def add_account_type(request):
     managers = Manager.objects.all()  # Include managers in the context
     return render(request, 'accounts/add_account_type.html', {'form': form, 'managers': managers})
 
-
+@csrf_protect
+@login_required
 def add_profile(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST)
@@ -295,7 +282,8 @@ def add_profile(request):
     managers = Manager.objects.all()  # Include managers in the context
     return render(request, 'accounts/add_profile.html', {'form': form, 'account_types': account_types, 'managers': managers})
 
-
+@csrf_protect
+@login_required
 def add_manager(request):
     if request.method == 'POST':
         form = ManagerForm(request.POST)
@@ -310,7 +298,8 @@ def add_manager(request):
     managers = Manager.objects.all()  # Include managers in the context
     return render(request, 'accounts/add_manager.html', {'form': form, 'managers': managers})
 
-
+@csrf_protect
+@login_required
 def add_employee(request):
     if request.method == 'POST':
         form = EmployeeForm(request.POST)
@@ -322,10 +311,12 @@ def add_employee(request):
     context = {
         'form': form,
         'profiles': Profile.objects.all(),
-        'account_types': AccountType.objects.all()
+        'account_types': AccountType.objects.all(),
+        'action': 'add'
     }
     return render(request, 'accounts/add_employee.html', context)
-
+@csrf_protect
+@login_required
 def add_department(request):
     if request.method == 'POST':
         form = DepartmentForm(request.POST)
@@ -336,7 +327,8 @@ def add_department(request):
     else:
         form = DepartmentForm()
     return render(request, 'accounts/add_department.html', {'form': form})
-
+@csrf_protect
+@login_required
 def get_account_types(request):
     profile_id = request.GET.get('profile_id')
     account_types = []

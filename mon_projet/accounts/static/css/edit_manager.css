@@ -48,6 +48,15 @@ form select {
     border: 1px solid #ccc;
     font-size: 1rem;
 }
+ul.errorlist {
+    color: red; /* Met le texte en rouge */
+    font-weight: bold; /* Rend le texte gras */
+    margin: 10px 0; /* Ajoute un espace autour du message d'erreur */
+    padding: 5px; /* Ajoute un peu de remplissage pour améliorer l'apparence */
+    border: 1px solid red; /* Ajoute une bordure rouge autour du message */
+    border-radius: 4px; /* Ajoute des coins arrondis à la bordure */
+    background-color: #f8d7da; /* Couleur de fond pour le message d'erreur */
+}
 
 button {
     padding: 12px 20px;

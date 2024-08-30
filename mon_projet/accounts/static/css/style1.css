@@ -112,7 +112,10 @@ table td:last-child {
     background-color: #4CAF50;
     color: white;
 }
-
+.messagesrecherche  {
+    font-weight: bold;
+    color: red; /* Optionnel : pour mettre le texte en rouge */
+}
 .btn-edit:hover {
     background-color: #45a049;
 }

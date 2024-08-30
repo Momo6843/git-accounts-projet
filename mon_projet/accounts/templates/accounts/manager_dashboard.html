@@ -25,54 +25,61 @@
             <input type="text" name="q" placeholder="Search employees..." value="{{ request.GET.q }}">
             <button type="submit">Search</button>
         </form>
-
-        <!-- Employees table -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Employee Name</th>
-                    <th>Email</th>
-                    <th>Account Types</th>
-                    <th>Department</th>
-                    <th>Hire Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for employee in employees %}
-                <tr>
-                    <td>{{ employee.first_name }} {{ employee.last_name }}</td>
-                    <td>{{ employee.email }}</td>
-                    <td>
-                        {% for account_type in employee.account_types.all %}
-                            {{ account_type.name }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </td>
-                    <td>{{ employee.department.name }}</td>
-                    <td>{{ employee.hire_date }}</td>
-                    <td>
-                        <div class="btn-container">
-                            <div class="btn-group btn-group-top">
-                                <a href="{% url 'edit_employee' employee.id %}" class="btn btn-edit">Editer</a>
-                                <form action="{% url 'delete_employee' employee.id %}" method="post" class="btn-group">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                                </form>
+        
+        <!-- Display no results message or the employee table -->
+        {% if no_results_message %}
+        <p class="messagesrecherche">{{ no_results_message }}</p>
+        {% else %}
+            <!-- Employees table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Email</th>
+                        <th>Account Types</th>
+                        <th>Department</th>
+                        <th>Hire Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+                        <td>{{ employee.email }}</td>
+                        <td>
+                            {% for account_type in employee.account_types.all %}
+                                {{ account_type.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{ employee.department }}</td>
+                        <td>{{ employee.hire_date }}</td>
+                        <td>
+                            <div class="btn-container">
+                                <div class="btn-group btn-group-top">
+                                    <a href="{% url 'edit_employee' employee.id %}" class="btn btn-edit">Editer</a>
+                                    <form action="{% url 'delete_employee' employee.id %}" method="post" class="btn-group">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                    </form>
+                                </div>
+                                <a href="{% url 'generate_employee_pdf' employee.id %}" class="btn btn-pdf btn-bottom">Télécharger</a>
                             </div>
-                            <a href="{% url 'generate_employee_pdf' employee.id %}" class="btn btn-pdf btn-bottom">Télécharger</a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
 
-        <!-- Buttons Group -->
-        <div class="btn-group">
-            <a href="{% url 'add_employee' %}" class="btn btn-add">Add Employee</a>
-            <a href="{% url 'generate_pdf' %}" class="btn btn-pdf">Download PDF</a>
-            <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
-        </div>
+        <!-- Add Employee Button -->
+        <a href="{% url 'add_employee' %}" class="btn btn-add">Add Employee</a>
+
+        <!-- Download All PDFs Button -->
+        <a href="{% url 'generate_pdf' %}" class="btn btn-pdf">Download PDF</a>
+
+        <!-- Logout Link -->
+        <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
     </div>
 </body>
 </html>

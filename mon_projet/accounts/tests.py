@@ -37,7 +37,7 @@ class ViewsTestCase(TestCase):
         # Test for invalid login credentials
         response = self.client.post(reverse('login'), {'username': 'unknown', 'password': 'password'})
         self.assertEqual(response.status_code, 200)  # Should render the login page
-        self.assertContains(response, 'Invalid credentials')
+        self.assertContains(response, 'Username or password incorect')
 
 
 
